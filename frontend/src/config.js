@@ -15,8 +15,13 @@ const config = {
 // 根据当前环境获取配置
 // 首先检查Vite的模式，然后检查环境变量，最后默认为development
 const getEnv = () => {
+  // 检查import.meta.env是否存在
+  if (typeof import.meta === 'undefined' || !import.meta.env) {
+    return 'development';
+  }
+  
   if (import.meta.env.MODE === 'production') return 'production';
-  if (import.meta.env.PROD) return 'production';
+  if (import.meta.env.PROD === true) return 'production';
   if (import.meta.env.VITE_APP_MODE === 'production') return 'production';
   return 'development';
 };
@@ -27,10 +32,14 @@ const currentConfig = config[env] || config.development;
 // 在控制台打印环境信息
 console.log('🌍 前端当前运行环境:', env);
 console.log('📊 环境变量详情:');
-console.log('   - import.meta.env.MODE:', import.meta.env.MODE);
-console.log('   - import.meta.env.PROD:', import.meta.env.PROD);
-console.log('   - import.meta.env.DEV:', import.meta.env.DEV);
-console.log('   - import.meta.env.VITE_APP_MODE:', import.meta.env.VITE_APP_MODE);
+if (typeof import.meta !== 'undefined' && import.meta.env) {
+  console.log('   - import.meta.env.MODE:', import.meta.env.MODE);
+  console.log('   - import.meta.env.PROD:', import.meta.env.PROD);
+  console.log('   - import.meta.env.DEV:', import.meta.env.DEV);
+  console.log('   - import.meta.env.VITE_APP_MODE:', import.meta.env.VITE_APP_MODE);
+} else {
+  console.log('   - import.meta.env 不可用');
+}
 console.log('🔌 使用API地址:', currentConfig.apiBaseUrl);
 console.log('⛓️ 使用Hardhat地址:', currentConfig.hardhatUrl);
 

@@ -23,7 +23,7 @@ const limiter = rateLimit({
   message: {
     status: 429,
     error: 'Too many requests, please try again later.',
-    note: '如需更高访问权限，请使用token参数'
+    message: '请求次数过多，请稍后再试或联系管理员获取访问令牌'
   }
 });
 

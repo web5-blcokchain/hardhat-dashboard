@@ -5,9 +5,10 @@
       
       <!-- 当没有token时显示提示 -->
       <div v-if="!hasToken" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
-        <p class="font-bold">提示</p>
-        <p>为了避免请求限制，可以添加token参数访问: <span class="font-mono bg-gray-200 px-1">?token=zhifu888</span></p>
-        <a :href="`${window.location.pathname}?token=zhifu888`" class="text-blue-600 underline">点击添加token</a>
+        <p class="font-bold">访问受限</p>
+        <p>检测到您未使用访问令牌，API请求可能受到速率限制。</p>
+        <p>如需无限制访问，请联系系统管理员获取访问令牌。</p>
+        <p class="text-sm text-gray-600 mt-2">联系方式: admin@example.com</p>
       </div>
       
       <NodeStatus />
@@ -17,13 +18,19 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import NodeStatus from './components/NodeStatus.vue'
 import NodeLogs from './components/NodeLogs.vue'
 
-// 检查URL中是否有token参数
-const hasToken = computed(() => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.has('token');
+// 初始化为false，在客户端挂载后检查
+const hasToken = ref(false);
+
+// 在组件挂载后检查URL参数
+onMounted(() => {
+  // 确保在客户端环境中执行
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    hasToken.value = urlParams.has('token');
+  }
 });
 </script>

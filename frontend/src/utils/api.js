@@ -4,6 +4,10 @@ const API_BASE_URL = config.apiBaseUrl;
 
 // 从当前URL获取token参数
 const getTokenFromUrl = () => {
+  // 确保在浏览器环境中执行
+  if (typeof window === 'undefined') {
+    return null;
+  }
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('token');
 };
