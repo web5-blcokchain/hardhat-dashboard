@@ -14,6 +14,10 @@ const ENV_MODE = envModeArg
   : (process.env.NODE_ENV || 'development');
 
 console.log(`🌍 运行环境: ${ENV_MODE}`);
+console.log(`📊 详细环境信息:`);
+console.log(`   - NODE_ENV: ${process.env.NODE_ENV || '未设置'}`);
+console.log(`   - 命令行参数: ${args.join(' ') || '无'}`);
+console.log(`   - 最终使用环境: ${ENV_MODE}`);
 
 // 检查 PM2 是否已安装
 function checkPM2() {
@@ -120,6 +124,7 @@ function createPM2Config() {
 // 使用 PM2 按顺序启动所有服务
 async function startServices(configPath) {
   console.log('🚀 正在启动所有服务...');
+  console.log(`🌍 使用环境模式: ${ENV_MODE}`);
   
   try {
     // 先停止所有可能已经运行的服务
@@ -158,11 +163,29 @@ async function startServices(configPath) {
     
     // 3. 最后启动前端服务
     console.log('🔄 正在启动前端服务...');
+    console.log(`🌍 前端环境模式: ${ENV_MODE}`);
     if (ENV_MODE === 'production') {
-      execSync(`pm2 start ${configPath} --only frontend --env production`, { stdio: 'inherit' });
+      console.log('📝 使用生产模式启动前端...');
+      execSync(`pm2 start ${configPath} --only frontend --env production -- --mode production`, { stdio: 'inherit' });
+      
+      // 验证前端服务配置 - 使用require而不是JSON.parse
+      try {
+        const pm2Config = require(configPath);
+        const frontendApp = pm2Config.apps.find(app => app.name === 'frontend');
+        if (frontendApp) {
+          console.log('✅ 前端服务配置:', {
+            mode: ENV_MODE,
+            args: frontendApp.env_production?.args || frontendApp.args
+          });
+        }
+      } catch (error) {
+        console.log('⚠️ 无法读取前端配置信息:', error.message);
+      }
+      
       console.log('✅ 所有服务已在生产环境模式下启动');
     } else {
-      execSync(`pm2 start ${configPath} --only frontend`, { stdio: 'inherit' });
+      console.log('📝 使用开发模式启动前端...');
+      execSync(`pm2 start ${configPath} --only frontend -- --mode development`, { stdio: 'inherit' });
       console.log('✅ 所有服务已在开发环境模式下启动');
     }
     
