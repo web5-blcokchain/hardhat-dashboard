@@ -1,5 +1,35 @@
-# Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# 前端界面模块
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 模块说明
+基于 Vue3 的前端监控界面，提供节点状态和日志的可视化展示。
+
+## 功能特性
+- 节点状态实时监控
+- 日志实时展示
+- 响应式设计
+- 主题定制
+
+## 配置说明
+- 开发服务器：5173端口
+- API配置
+- 主题配置
+
+## 使用方法
+```bash
+yarn install
+yarn dev
+```
+
+## 开发指南
+- 组件在 components 目录
+- 页面在 views 目录
+- 样式在 styles 目录
+```
+
+这些文档提供了完整的项目说明，包括：
+1. 项目整体架构和各个模块的职责
+2. 详细的安装和使用说明
+3. 开发指南和注意事项
+4. 完整的部署流程
+5. 维护和贡献指南
