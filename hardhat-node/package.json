@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "chalk": "4",
     "hardhat": "^2.22.19"
   },
   "devDependencies": {

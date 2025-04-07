@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { ethers } = require('ethers');
+const logsRoutes = require('./routes/logs');
 
 const app = express();
 
@@ -50,6 +51,8 @@ app.get('/api/node/status', async (req, res) => {
     });
   }
 });
+
+app.use('/api/logs', logsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
