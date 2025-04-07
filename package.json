@@ -1,0 +1,7 @@
+{
+  "name": "hardhat-node",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "jim <jim.zh@google.com>",
+  "license": "MIT"
+}
