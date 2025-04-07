@@ -1,21 +1,20 @@
-
 # Hardhat Node Monitoring System
 
 English | [简体中文](./README.md)
 
-## Background
-This project is a monitoring system for Ethereum test nodes based on Hardhat, designed for development and testing environments. It provides a visual web interface for monitoring node status and viewing real-time logs.
+## Project Background
+This project is a monitoring system for Ethereum test nodes based on Hardhat, used for monitoring the status, viewing logs, and managing Ethereum nodes in development and testing environments. The system adopts a front-end and back-end separated architecture, providing an intuitive web interface to monitor node status and view real-time logs.
 
-## Architecture
-The project consists of three main modules:
-- **hardhat-node**: Ethereum test node based on Hardhat
-- **backend**: Express backend service providing API interfaces
-- **frontend**: Vue3 frontend interface for visualization
+## System Architecture
+The project is divided into three main modules:
+- **[hardhat-node](./hardhat-node/README.md)**: Ethereum test node, implemented based on Hardhat
+- **[backend](./backend/README.md)**: Express back-end service, providing API interfaces
+- **[frontend](./frontend/README.md)**: Vue3 front-end interface, providing visual monitoring interface
 
-## Requirements
+## Environment Requirements
 - Node.js >= 16.0.0
 - Yarn >= 1.22.0
-- OS: MacOS/Linux/Windows
+- Operating System: MacOS/Linux/Windows
 
 ## Project Structure
 ```tree
@@ -23,7 +22,7 @@ hardhat-node/
 ├── hardhat-node/         # Hardhat node module
 ├── backend/             # Backend service module
 ├── frontend/           # Frontend interface module
-├── contracts/          # Smart contracts directory
+├── contracts/          # Smart contract directory
 ├── scripts/            # Deployment and management scripts
 └── docs/              # Project documentation
 ```
@@ -35,38 +34,19 @@ git clone <repository-url>
 cd hardhat-node
 ```
 
-2. Install dependencies
+2. Use the automated startup script (recommended)
 ```bash
-# Install Hardhat node dependencies
-cd hardhat-node
-yarn install
+# Development environment startup
+node start.js
 
-# Install backend dependencies
-cd ../backend
-yarn install
-
-# Install frontend dependencies
-cd ../frontend
-yarn install
+# Production environment startup
+node start.js --mode=production
+# or
+npm run start:prod
 ```
 
-3. Start services
-```bash
-# Terminal 1: Start Hardhat node
-cd hardhat-node
-yarn node
-
-# Terminal 2: Start backend service
-cd backend
-yarn dev
-
-# Terminal 3: Start frontend service
-cd frontend
-yarn dev
-```
-
-4. Access the system
-Open browser and visit `http://localhost:5173`
+3. Access the system
+Open the browser and visit `http://localhost:5173`
 
 ## Core Features
 - Node status monitoring
@@ -75,56 +55,47 @@ Open browser and visit `http://localhost:5173`
 - Blockchain parameter configuration
 
 ## Core Design Philosophy
-1. **Modular Design**: Clear responsibilities with frontend-backend separation
-2. **Extensibility**: Reserved interfaces for new features
-3. **Developer Friendly**: Complete development environment and testing tools
-4. **Flexible Configuration**: Support for custom settings and environment variables
+1. **Modular Design**: Adopts a front-end and back-end separated architecture, with clear module responsibilities
+2. **Extensibility**: Reserved extension interfaces for easy addition of new features
+3. **Developer-Friendly**: Provides complete development environment and testing tools
+4. **Flexible Configuration**: Supports custom configuration and environment variables
 
 ## Deployment Guide
-1. **Production Environment Setup**
-   - Modify configuration parameters
-   - Set environment variables
-   - Configure PM2 or other process managers
+For a detailed deployment guide, including development and production environment configuration, please refer to [Deployment Guide](./部署运行指南.md).
 
-2. **Deployment Steps**
-   - Build frontend project
-   - Configure reverse proxy
-   - Launch services
-
-## Development Guidelines
+## Secondary Development Suggestions
 1. **New Feature Development**
-   - Follow existing modular structure
-   - Add new features in corresponding modules
+   - Follow the existing modular structure
+   - Add new features in the corresponding modules
    - Maintain consistent code style
 
-2. **Testing Recommendations**
-   - Write unit and integration tests
-   - Use Hardhat test network
+2. **Testing Suggestions**
+   - Write unit tests and integration tests
+   - Use Hardhat test network for testing
    - Conduct stress testing and performance optimization
 
-3. **Important Notes**
-   - Maintain configuration compatibility
-   - Follow logging standards
-   - Adhere to Git workflow
+3. **Notes**
+   - Maintain compatibility of configuration files
+   - Pay attention to logging specifications
+   - Follow Git workflow
 
 ## Maintenance Guide
-- Regular dependency updates
-- System performance monitoring
-- Important data backup
-- Log checking
+- Regularly update dependencies
+- Monitor system performance
+- Backup important data
+- Check log records
 
-## Contributing
+## Contribution Guide
 Welcome to submit Issues and Pull Requests, please follow these steps:
 1. Fork the project
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+2. Create a feature branch
+3. Submit changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 MIT License
 
-## Contact
+## Contact Information
 - Project Maintainer: [Maintainer Name]
 - Email: [Contact Email]
-```

@@ -1,4 +1,3 @@
-
 # Hardhat 节点监控系统 / Hardhat Node Monitoring System
 
 [English](./README_EN.md) | 简体中文
@@ -8,9 +7,9 @@
 
 ## 系统架构
 项目分为三个主要模块：
-- **hardhat-node**: 以太坊测试节点，基于 Hardhat 实现
-- **backend**: Express 后端服务，提供 API 接口
-- **frontend**: Vue3 前端界面，提供可视化监控界面
+- **[hardhat-node](./hardhat-node/README.md)**: 以太坊测试节点，基于 Hardhat 实现
+- **[backend](./backend/README.md)**: Express 后端服务，提供 API 接口
+- **[frontend](./frontend/README.md)**: Vue3 前端界面，提供可视化监控界面
 
 ## 环境要求
 - Node.js >= 16.0.0
@@ -35,37 +34,18 @@ git clone <repository-url>
 cd hardhat-node
 ```
 
-2. 安装依赖
+2. 使用自动化脚本启动（推荐）
 ```bash
-# 安装 Hardhat 节点依赖
-cd hardhat-node
-yarn install
+# 开发环境启动
+node start.js
 
-# 安装后端依赖
-cd ../backend
-yarn install
-
-# 安装前端依赖
-cd ../frontend
-yarn install
+# 生产环境启动
+node start.js --mode=production
+# 或
+npm run start:prod
 ```
 
-3. 启动服务
-```bash
-# 终端 1: 启动 Hardhat 节点
-cd hardhat-node
-yarn node
-
-# 终端 2: 启动后端服务
-cd backend
-yarn dev
-
-# 终端 3: 启动前端服务
-cd frontend
-yarn dev
-```
-
-4. 访问系统
+3. 访问系统
 打开浏览器访问 `http://localhost:5173`
 
 ## 核心功能
@@ -81,15 +61,7 @@ yarn dev
 4. **配置灵活**：支持自定义配置和环境变量
 
 ## 部署指南
-1. **生产环境配置**
-   - 修改配置文件中的相关参数
-   - 设置环境变量
-   - 配置 PM2 或其他进程管理工具
-
-2. **部署步骤**
-   - 构建前端项目
-   - 配置反向代理
-   - 启动服务
+详细的部署指南，包括开发环境和生产环境配置，请参考[部署运行指南](./部署运行指南.md)。
 
 ## 二次开发建议
 1. **新功能开发**
@@ -127,5 +99,4 @@ MIT License
 ## 联系方式
 - 项目维护者：[维护者姓名]
 - 邮箱：[联系邮箱]
-``` 
- 
+```
