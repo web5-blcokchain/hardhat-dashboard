@@ -3,5 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "jim <jim.zh@google.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "node start.js",
+    "stop": "pm2 stop all",
+    "restart": "pm2 restart all",
+    "status": "pm2 status",
+    "logs": "pm2 logs",
+    "monit": "pm2 monit"
+  }
 }

@@ -2,11 +2,29 @@ const express = require('express');
 const cors = require('cors');
 const { ethers } = require('ethers');
 const logsRoutes = require('./routes/logs');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
+// 限速中间件应该最先使用
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(csrf({ cookie: true }));
+
+// CSRF Token 中间件
+app.use((req, res, next) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  next();
+});
 
 let provider;
 let nodeStartTime;

@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "csurf": "^1.11.0",
     "dotenv": "^16.4.7",
     "ethers": "6",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
     "hardhat": "^2.22.19",
     "nodemon": "^3.1.9"
   },
