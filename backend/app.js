@@ -32,7 +32,7 @@ let nodeStartTime;
 // 初始化 provider
 const initProvider = async () => {
   try {
-    provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+    provider = new ethers.JsonRpcProvider("http://localhost:8545");
     nodeStartTime = Date.now();
     await provider.getBlockNumber();
     return true;

@@ -20,6 +20,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import config from '../config';
 
 const logs = ref([]);
 const error = ref('');
@@ -32,7 +33,7 @@ const formatTime = (timestamp) => {
 
 const fetchLogs = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/logs');
+    const response = await fetch(`${config.apiBaseUrl}/logs`);
     if (!response.ok) {
       throw new Error('获取日志失败');
     }

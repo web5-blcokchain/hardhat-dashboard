@@ -6,6 +6,15 @@ const path = require('path');
 const ROOT_DIR = __dirname;
 const MODULES = ['hardhat-node', 'backend', 'frontend'];
 
+// 检查命令行参数，获取环境模式
+const args = process.argv.slice(2);
+const envModeArg = args.find(arg => arg.startsWith('--mode='));
+const ENV_MODE = envModeArg 
+  ? envModeArg.split('=')[1] 
+  : (process.env.NODE_ENV || 'development');
+
+console.log(`🌍 运行环境: ${ENV_MODE}`);
+
 // 检查 PM2 是否已安装
 function checkPM2() {
   try {
@@ -25,8 +34,8 @@ function checkPM2() {
   }
 }
 
-// 安装模块依赖
-function installDependencies(modulePath) {
+// 安装模块依赖 - 改为同步等待完成
+async function installDependencies(modulePath) {
   console.log(`📦 正在为 ${path.basename(modulePath)} 安装依赖...`);
   
   // 检查 package.json 是否存在
@@ -40,6 +49,7 @@ function installDependencies(modulePath) {
     if (!fs.existsSync(path.join(modulePath, 'node_modules'))) {
       console.log(`📦 ${path.basename(modulePath)} 的 node_modules 不存在，开始安装...`);
       execSync('yarn install', { cwd: modulePath, stdio: 'inherit' });
+      console.log(`✅ ${path.basename(modulePath)} 依赖安装完成`);
     } else {
       console.log(`✅ ${path.basename(modulePath)} 的依赖已安装`);
     }
@@ -64,6 +74,9 @@ function createPM2Config() {
         autorestart: true,
         env: {
           NODE_ENV: 'development',
+        },
+        env_production: {
+          NODE_ENV: 'production',
         }
       },
       {
@@ -78,6 +91,10 @@ function createPM2Config() {
         env: {
           NODE_ENV: 'development',
           PORT: 3000
+        },
+        env_production: {
+          NODE_ENV: 'production',
+          PORT: 3000
         }
       },
       {
@@ -87,6 +104,9 @@ function createPM2Config() {
         args: '--port 5173',
         env: {
           NODE_ENV: 'development'
+        },
+        env_production: {
+          NODE_ENV: 'production'
         }
       }
     ]
@@ -97,13 +117,54 @@ function createPM2Config() {
   return configPath;
 }
 
-// 使用 PM2 启动所有服务
-function startServices(configPath) {
+// 使用 PM2 按顺序启动所有服务
+async function startServices(configPath) {
   console.log('🚀 正在启动所有服务...');
   
   try {
-    execSync(`pm2 start ${configPath}`, { stdio: 'inherit' });
-    console.log('✅ 所有服务已启动');
+    // 先停止所有可能已经运行的服务
+    try {
+      execSync('pm2 delete all', { stdio: 'ignore' });
+      console.log('✅ 已停止所有已运行的服务');
+    } catch (error) {
+      // 忽略可能的错误，如果没有运行中的服务
+    }
+    
+    // 按照特定顺序启动服务
+    
+    // 1. 首先启动 Hardhat 节点
+    console.log('🔄 正在启动 Hardhat 节点...');
+    if (ENV_MODE === 'production') {
+      execSync(`pm2 start ${configPath} --only hardhat-node --env production`, { stdio: 'inherit' });
+    } else {
+      execSync(`pm2 start ${configPath} --only hardhat-node`, { stdio: 'inherit' });
+    }
+    
+    // 等待 Hardhat 节点启动完成
+    console.log('⏳ 等待 Hardhat 节点启动完成 (5秒)...');
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    // 2. 启动后端服务
+    console.log('🔄 正在启动后端服务...');
+    if (ENV_MODE === 'production') {
+      execSync(`pm2 start ${configPath} --only backend --env production`, { stdio: 'inherit' });
+    } else {
+      execSync(`pm2 start ${configPath} --only backend`, { stdio: 'inherit' });
+    }
+    
+    // 等待后端服务启动完成
+    console.log('⏳ 等待后端服务启动完成 (3秒)...');
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // 3. 最后启动前端服务
+    console.log('🔄 正在启动前端服务...');
+    if (ENV_MODE === 'production') {
+      execSync(`pm2 start ${configPath} --only frontend --env production`, { stdio: 'inherit' });
+      console.log('✅ 所有服务已在生产环境模式下启动');
+    } else {
+      execSync(`pm2 start ${configPath} --only frontend`, { stdio: 'inherit' });
+      console.log('✅ 所有服务已在开发环境模式下启动');
+    }
     
     // 显示服务状态
     console.log('\n📊 服务状态:');
@@ -143,6 +204,7 @@ function updatePackageJson() {
   packageJson.scripts = {
     ...packageJson.scripts,
     start: 'node start.js',
+    'start:prod': 'node start.js --mode=production',
     stop: 'pm2 stop all',
     restart: 'pm2 restart all',
     status: 'pm2 status',
@@ -156,7 +218,7 @@ function updatePackageJson() {
 
 // 主函数
 async function main() {
-  console.log('🚀 开始启动 Hardhat 节点监控系统...');
+  console.log(`🚀 开始启动 Hardhat 节点监控系统 (${ENV_MODE} 模式)...`);
   
   // 检查 PM2
   if (!checkPM2()) {
@@ -164,18 +226,18 @@ async function main() {
     process.exit(1);
   }
   
-  // 安装各模块依赖
-  let allDepsInstalled = true;
+  // 安装各模块依赖 - 按顺序安装并等待完成
+  console.log('📦 开始安装各模块依赖...');
   for (const module of MODULES) {
     const modulePath = path.join(ROOT_DIR, module);
-    if (!installDependencies(modulePath)) {
-      allDepsInstalled = false;
+    const success = await installDependencies(modulePath);
+    
+    if (!success) {
+      console.error(`❌ ${module} 模块依赖安装失败，无法继续`);
+      process.exit(1);
     }
   }
-  
-  if (!allDepsInstalled) {
-    console.warn('⚠️ 部分依赖安装失败，但将继续尝试启动服务');
-  }
+  console.log('✅ 所有模块依赖安装完成');
   
   // 创建 PM2 配置
   const configPath = createPM2Config();
@@ -183,8 +245,8 @@ async function main() {
   // 更新 package.json
   updatePackageJson();
   
-  // 启动服务
-  if (startServices(configPath)) {
+  // 按顺序启动服务
+  if (await startServices(configPath)) {
     console.log('🎉 Hardhat 节点监控系统已成功启动!');
     console.log('🌐 前端访问地址: http://localhost:5173');
     console.log('🔌 后端 API 地址: http://localhost:3000');

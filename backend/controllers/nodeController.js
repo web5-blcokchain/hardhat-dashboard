@@ -6,7 +6,7 @@ let nodeStartTime;
 const initProvider = () => {
   if (!provider) {
     try {
-      provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+      provider = new ethers.JsonRpcProvider("http://localhost:8545");
       nodeStartTime = Date.now();
     } catch (error) {
       console.error("Provider initialization failed:", error);

@@ -10,6 +10,7 @@
     "restart": "pm2 restart all",
     "status": "pm2 status",
     "logs": "pm2 logs",
-    "monit": "pm2 monit"
+    "monit": "pm2 monit",
+    "start:prod": "node start.js --mode=production"
   }
 }

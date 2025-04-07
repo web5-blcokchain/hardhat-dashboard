@@ -29,8 +29,9 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import config from '../config';
 
-const API_URL = 'http://localhost:3000/api/node/status';
+const API_URL = `${config.apiBaseUrl}/node/status`;
 const status = ref('offline');
 const blockNumber = ref(0);
 const chainId = ref(0);
