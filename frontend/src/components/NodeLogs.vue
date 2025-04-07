@@ -20,7 +20,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import config from '../config';
+import { fetchLogs } from '../utils/api';
 
 const logs = ref([]);
 const error = ref('');
@@ -31,14 +31,13 @@ const formatTime = (timestamp) => {
   return new Date(timestamp).toLocaleTimeString();
 };
 
-const fetchLogs = async () => {
+const updateLogs = async () => {
   try {
-    const response = await fetch(`${config.apiBaseUrl}/logs`);
-    if (!response.ok) {
-      throw new Error('获取日志失败');
+    const data = await fetchLogs(100);
+    if (data.error) {
+      throw new Error(data.error);
     }
-    const data = await response.json();
-    logs.value = data.logs;
+    logs.value = data.logs || [];
     error.value = '';
   } catch (err) {
     console.error('获取日志失败:', err);
@@ -47,8 +46,8 @@ const fetchLogs = async () => {
 };
 
 onMounted(() => {
-  fetchLogs();
-  timer = setInterval(fetchLogs, 3000);
+  updateLogs();
+  timer = setInterval(updateLogs, 3000);
 });
 
 onUnmounted(() => {

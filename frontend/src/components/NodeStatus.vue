@@ -29,9 +29,8 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import config from '../config';
+import { fetchNodeStatus } from '../utils/api';
 
-const API_URL = `${config.apiBaseUrl}/node/status`;
 const status = ref('offline');
 const blockNumber = ref(0);
 const chainId = ref(0);
@@ -46,13 +45,12 @@ const formatUptime = computed(() => {
   return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
 });
 
-const fetchNodeStatus = async () => {
+const updateNodeStatus = async () => {
   try {
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error('Node service not responding');
+    const data = await fetchNodeStatus();
+    if (data.status === 'offline' || data.error) {
+      throw new Error(data.error || 'Node service not responding');
     }
-    const data = await response.json();
     status.value = data.status;
     blockNumber.value = data.blockNumber;
     chainId.value = data.chainId;
@@ -66,8 +64,8 @@ const fetchNodeStatus = async () => {
 };
 
 onMounted(() => {
-  fetchNodeStatus();
-  timer = setInterval(fetchNodeStatus, 5000);
+  updateNodeStatus();
+  timer = setInterval(updateNodeStatus, 5000);
 });
 
 onUnmounted(() => {

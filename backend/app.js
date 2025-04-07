@@ -8,10 +8,23 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 
+// 特殊令牌，允许无限制访问
+const SPECIAL_TOKEN = 'zhifu888';
+
 // 限速中间件应该最先使用
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
+  // 添加特殊token豁免
+  skip: function (req) {
+    // 如果URL参数中包含特定token，则跳过限制
+    return req.query.token === SPECIAL_TOKEN;
+  },
+  message: {
+    status: 429,
+    error: 'Too many requests, please try again later.',
+    note: '如需更高访问权限，请使用token参数'
+  }
 });
 
 app.use(limiter);
