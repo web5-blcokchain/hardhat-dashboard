@@ -40,7 +40,7 @@ module.exports = {
       "name": "frontend",
       "cwd": "/Users/zhangandy/Documents/work/code/blockchain/hardhat-node/frontend",
       "script": "node_modules/.bin/vite",
-      "args": "--port 5173",
+      "args": "--port 5173 --host",
       "env": {
         "NODE_ENV": "development"
       },
